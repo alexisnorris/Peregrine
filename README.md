@@ -3,7 +3,7 @@
 # Peregrine & SHIMMER Genome Assembly Toolkit
 
 Peregrine is a fast genome assembler for accurate long reads (length > 10kb,
-accuracy > 99%). It can assemble a human genome from 30x reads within 20 cpu
+accuracy > 99%). It can assemble a human genome from 30x reads within 20 CPU
 hours from reads to polished consensus. It uses Sparse HIereachical MimiMizER
 (SHIMMER) for fast read-to-read overlaping without quadratic comparisions used
 in other OLC assemblers.
@@ -43,7 +43,7 @@ Peregrine is designed to run on single compute node. It does not need a grid
 computing job scheduling system. It uses Pypeflow to coordinate multiple
 concurrent processes.  
 
-After revsion 0.1.5.3, You can test a small assembly using simulated E. Coli 
+After revsion 0.1.5.3, You can test a small assembly using simulated E. coli 
 reads with Docker:
 
 ```
@@ -52,7 +52,7 @@ docker run -it --rm -v $PWD:/wd cschin/peregrine:$IMAGETAG test
 ```
 
 The assembly results are in `$PWD/ecoli_test_results/`. The testing case will
-download an E. Coli reference and generate simulated reads. After the assembly
+download an E. coli reference and generate simulated reads. After the assembly
 is done, it also installs `nucmer` to run `dandiff` comparing the assembled 
 contigs with the original E. coli reference. You can check the ouput by using 
 `cat $PWD/ecoli_test_results/out.report` command.
@@ -81,7 +81,7 @@ Usage:
                             [--aln_bw <aln_bw>]
                             [--ovlp_upper <ovlp_upper>]
   pg_run.py (-h | --help)
-  pg_run.py --verison
+  pg_run.py --version
 
 Options:
   -h --help                   Show this help
@@ -92,48 +92,48 @@ Options:
   --shimmer-k <shimmer_k>     Level 0 k-mer size [default: 16]
   --shimmer-w <shimmer_w>     Level 0 window size [default: 80]
   --shimmer-r <shimmer_r>     Reduction factore for high level SHIMMER [default: 6]
-  --shimmer-l <shimmer_l>     number of level of shimmer used, the value should be 1 or 2 [default: 2]
+  --shimmer-l <shimmer_l>     Number of level of SHIMMER used, the value should be 1 or 2 [default: 2]
   --best_n_ovlp <n_ovlp>      Find best n_ovlp overlap [default: 4]
-  --mc_lower <mc_lower>       Does not cosider SHIMMER with count less than mc_low [default: 2]
-  --mc_upper <mc_upper>       Does not cosider SHIMMER with count greater than mc_upper [default: 240]
+  --mc_lower <mc_lower>       Does not consider SHIMMER with count less than mc_low [default: 2]
+  --mc_upper <mc_upper>       Does not consider SHIMMER with count greater than mc_upper [default: 240]
   --aln_bw <aln_bw>           Max off-diagonal gap allow during overlap confirmation [default: 100]
   --ovlp_upper <ovlp_upper>   Ignore cluster with overlap count greater ovlp_upper [default: 120]
 ```
 
-The first required option is `reads.lst`.  The `reads.list` should a
+The first required option is `reads.lst`.  The `reads.lst` should be a
 path to a file that contains the list of the paths of the input sequence files.
 
-The rest required options specify how to partition the data for different part
+The rest of the required options specify how to partition the data for different parts
 of the pipeline and the number of the processors used for each of the step.
 
 `<index_nchunk>`  and `<index_nproc>` control the number of "chunks" and the
-number of cpu used concurrently for the initial SHIMMER index generation.
+number of CPU used concurrently for the initial SHIMMER index generation.
 
 `<ovlp_nchunk>`  and `<ovlp_nproc>` control the number of "chunks" and the
-number of cpu used concurrently for generating overlap inforrmation between
+number of CPU used concurrently for generating overlap inforrmation between
 reads. This part typically use the most memory and the exact size of RAM used
 concurrently depends on the size of input sequence data and the index file
 size. 
 
 You can use larger number of `<ovlp_nchunk>` and smaller number of
-`<ovlp_nproc>` on a smaller memory mechine. For example, I was able to finish
+`<ovlp_nproc>` on a smaller memory machine. For example, I was able to finish
 this part using a machine with 32G RAM with `ovlp_nchunk=24` and
 `ovlp_nproc=1`. 
 
 If there is enough memory, for example, AWS bothe m5d.metal and r5d.12xlarge
-have 384G RAM, they can support running 24 to 48 cpu cores at once. However,
+have 384G RAM, they can support running 24 to 48 CPU cores at once. However,
 the overlap step needs to do random access the sequence data through shared
 memory mapped file, it will be great to reserve some RAM to cache the sequence
 in memory in RAM. In our test, 48 cores does not provide significant speeding
-comparing to use 24 cores. Also, if there is not enough memory, you may need
-fast SSD or nvme drives and reduce the number or CPU core concurrently
+comparing to using 24 cores. Also, if there is not enough memory, you may need
+fast SSD or NVMe drives and to reduce the number of CPU cores concurrently
 accessing the sequence data.
 
 `<mapping_nchunk>` and `<mapping_nproc>` control the partitioning and the
 number of cores used for mapping the sequence reads to draft contigs for the
 following consensus step.
 
-`<sort_nproc>` controls the number of cpu cores used for sorting the reads to
+`<sort_nproc>` controls the number of CPU cores used for sorting the reads to
 contigs map.
 
 `<cns_nchunk>` and  `<cns_nproc>` control the partitioning and the number of
